@@ -1,0 +1,45 @@
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">
+                Barra Progreso
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width]="progreso1 + '%'" style="width: 10%" [attr.ariaValuenow]="progreso1" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <br>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" [style.width]="progreso2 + '%'" style="width: 10%" [attr.ariaValuenow]="progreso2" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <app-incrementador [step]="5" leyenda="Barra Progreso 1" [progreso]="progreso1" (result)="resultado1($event)"></app-incrementador>
+            <!-- cuando el parametro input va sin llaves es porque le estoy asignando un string quemado -->
+            <!-- <div class="card-body">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                  <button class="btn btn-primary" type="button" (click)="cambiarValor(-5)">
+                    <i class="mdi mdi-minus"></i>
+                  </button>
+                </span>
+                    <input type="text" class="form-control" [(ngModel)]="progreso" />
+                    <span class="input-group-btn">
+                  <button class="btn btn-primary" type="button" (click)="cambiarValor(+5)">
+                    <i class="mdi mdi-plus"></i>
+                  </button>
+                </span>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="card">
+            <app-incrementador [leyenda]="leyenda2" [step]="10" [progreso]="progreso2" (result)="progreso2 = $event"></app-incrementador>
+        </div>
+    </div>
+</div>
