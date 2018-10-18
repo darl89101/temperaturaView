@@ -1,24 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { TemperaturaService } from '../../services/temperatura/temperatura.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styles: []
+  styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
 
   public lineChartLegend: boolean = true;
   public lineChartType: string = 'line';
 
-// lineChart
+  // lineChart
   lineChartData: any[] = [
     { data: [], label: 'Temperatura' }
-    // { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
-    // { data: [18, 48, 77, 9, 100, 27, 40], label: 'Series C' }
   ];
 
-  public lineChartLabels: any[] = ['Enero'];
+  public lineChartLabels: Array<any> = [];
   public lineChartOptions: any = {
     responsive: true
   };
@@ -50,43 +49,21 @@ export class DashboardComponent implements OnInit {
     // }
   ];
 
-  constructor(private service: TemperaturaService) { }
+  constructor(private service: TemperaturaService, private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.service.consultarTemperatura().subscribe(tempData => {
-      // console.log(tempData);
-
-
-      let _lineChartLabels: any[] = new Array(tempData.length);
+      this.lineChartLabels.length = 0;
       let _lineChartData: any[] = new Array(tempData.length);
       for (let i = 0; i < tempData.length; i++) {
-        _lineChartData[i] = {data: new Array(tempData.length), label: this.lineChartData[0].label};
-
-        for (let j = 0; j < tempData.length; j++) {
-          let temp = tempData[tempData.length - 1 - j];
-          _lineChartLabels[j] = j + ''; // temp.createdAt);
-          _lineChartData[i].data[j] = Number(temp.valor); // Math.floor((Math.random() * 100) + 1);
-        }
-        // for (let j = tempData.length - 1; j >= 0; j--) {
-        //   let temp = tempData[j];
-        //   _lineChartData[i].data[j] = Number(temp.valor); // Math.floor((Math.random() * 100) + 1);
-        // }
+        _lineChartData[i] = {data: new Array(tempData.length), label: 'Temperatura'};
+        let temp = tempData[tempData.length - 1 - i];
+        this.lineChartLabels.push(new Date(temp.createdAt).toLocaleTimeString());
+        _lineChartData[0].data[i] = Number(temp.valor);
       }
-      this.lineChartLabels = _lineChartLabels;
       this.lineChartData = _lineChartData;
-      console.log(this.lineChartLabels);
+      this.ref.detectChanges();
     });
-  }
-
-  public randomize(): void {
-    let _lineChartData: any[] = new Array(this.lineChartData.length);
-    for (let i = 0; i < this.lineChartData.length; i++) {
-      _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
-      for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-        _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-      }
-    }
-    this.lineChartData = _lineChartData;
   }
 
   // events
