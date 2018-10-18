@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { TemperaturaService } from '../../services/temperatura/temperatura.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,6 +10,13 @@ import { TemperaturaService } from '../../services/temperatura/temperatura.servi
 })
 export class DashboardComponent implements OnInit {
 
+  @ViewChild('d') date1: ElementRef;
+
+  picker1: any;
+  // @ViewChild('d2')
+  picker2: any;
+
+  muestras: number = 20;
   public lineChartLegend: boolean = true;
   public lineChartType: string = 'line';
 
@@ -52,18 +60,7 @@ export class DashboardComponent implements OnInit {
   constructor(private service: TemperaturaService, private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.service.consultarTemperatura().subscribe(tempData => {
-      this.lineChartLabels.length = 0;
-      let _lineChartData: any[] = new Array(tempData.length);
-      for (let i = 0; i < tempData.length; i++) {
-        _lineChartData[i] = {data: new Array(tempData.length), label: 'Temperatura'};
-        let temp = tempData[tempData.length - 1 - i];
-        this.lineChartLabels.push(new Date(temp.createdAt).toLocaleTimeString());
-        _lineChartData[0].data[i] = Number(temp.valor);
-      }
-      this.lineChartData = _lineChartData;
-      this.ref.detectChanges();
-    });
+    this.consultarDatos(undefined, undefined);
   }
 
   // events
@@ -73,6 +70,42 @@ export class DashboardComponent implements OnInit {
 
   public chartHovered(e: any): void {
     console.log(e);
+  }
+
+  aplicarDatos() {
+    let date1;
+    let date2;
+    if (this.picker2) {
+      date2 = formatDate(new Date(this.picker2.year, this.picker2.month, this.picker2.day), 'yyyy/MM/dd', 'en-US');
+    }
+    if (this.picker1) {
+      date1 = formatDate(new Date(this.picker1.year, this.picker1.month, this.picker1.day), 'yyyy/MM/dd', 'en-US');
+    }
+    this.consultarDatos(date1, date2);
+  }
+
+  limpiarDatos() {
+    this.picker1 = undefined;
+    this.picker2 = undefined;
+  }
+
+  consultarDatos(fini: string, ffin: string) {
+    this.service.consultarTemperatura(fini, ffin).subscribe(tempData => {
+
+      console.log('dataaa', tempData.length);
+
+      this.lineChartLabels.length = 0;
+      let _lineChartData: any[] = new Array(tempData.length);
+      for (let i = 0; i < tempData.length; i++) {
+
+        _lineChartData[i] = {data: new Array(tempData.length), label: 'Temperatura'};
+        let temp = tempData[tempData.length - 1 - i];
+        this.lineChartLabels.push(new Date(temp.createdAt).toLocaleTimeString());
+        _lineChartData[0].data[i] = Number(temp.valor);
+      }
+      this.lineChartData = _lineChartData;
+      this.ref.detectChanges();
+    });
   }
 
 }

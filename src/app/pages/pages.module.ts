@@ -26,6 +26,9 @@ import { ModalHospitalComponent } from '../components/modal-hospital/modal-hospi
 import { MedicosComponent } from './medicos/medicos.component';
 import { MedicoComponent } from './medicos/medico.component';
 
+// modulo boostrap
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
     declarations: [
         ProgressComponent,
@@ -57,6 +60,7 @@ import { MedicoComponent } from './medicos/medico.component';
         FormsModule,
         ChartsModule,
         PipesModule,
+        NgbModule,
         RouterModule.forChild(PAGE_ROUTES)
     ]
 })
