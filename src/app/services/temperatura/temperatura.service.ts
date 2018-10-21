@@ -34,4 +34,14 @@ export class TemperaturaService {
 
   }
 
+  consultarTemperaturaByDate(fini: string, ffin: string, limit: number) {
+    return this.http.get(URL_SERVICIOS + `/temp?fini=${fini}&ffin=${ffin}&limit=${limit}`)
+    .pipe(
+      map((res: any) => {
+        return res.temperaturas;
+      })
+    );
+
+  }
+
 }

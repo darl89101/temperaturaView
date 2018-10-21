@@ -28,6 +28,7 @@ import { MedicoComponent } from './medicos/medico.component';
 
 // modulo boostrap
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HistorialComponent } from './historial/historial.component';
 
 @NgModule({
     declarations: [
@@ -46,7 +47,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         HospitalesComponent,
         ModalHospitalComponent,
         MedicosComponent,
-        MedicoComponent
+        MedicoComponent,
+        HistorialComponent
     ],
     exports: [
         PagesComponent,

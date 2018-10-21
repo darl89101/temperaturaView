@@ -3,12 +3,11 @@ import { TemperaturaService } from '../../services/temperatura/temperatura.servi
 import { formatDate } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-historial',
+  templateUrl: './historial.component.html',
+  styleUrls: ['./historial.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class HistorialComponent implements OnInit {
 
   @ViewChild('d') date1: ElementRef;
 
@@ -60,7 +59,7 @@ export class DashboardComponent implements OnInit {
   constructor(private service: TemperaturaService, private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.consultarDatos(undefined, undefined);
+    // this.consultarDatos(undefined, undefined);
   }
 
   // events
@@ -76,10 +75,10 @@ export class DashboardComponent implements OnInit {
     let date1;
     let date2;
     if (this.picker2) {
-      date2 = formatDate(new Date(this.picker2.year, this.picker2.month, this.picker2.day), 'yyyy/MM/dd', 'en-US');
+      date2 = formatDate(new Date(this.picker2.year, this.picker2.month - 1, this.picker2.day), 'yyyy/MM/dd', 'en-US');
     }
     if (this.picker1) {
-      date1 = formatDate(new Date(this.picker1.year, this.picker1.month, this.picker1.day), 'yyyy/MM/dd', 'en-US');
+      date1 = formatDate(new Date(this.picker1.year, this.picker1.month - 1, this.picker1.day), 'yyyy/MM/dd', 'en-US');
     }
     this.consultarDatos(date1, date2);
   }
@@ -90,8 +89,11 @@ export class DashboardComponent implements OnInit {
   }
 
   consultarDatos(fini: string, ffin: string) {
-    this.service.consultarTemperatura(fini, ffin).subscribe(tempData => {
+    console.log(this.muestras);
+    this.service.consultarTemperaturaByDate(fini, ffin, this.muestras).subscribe(tempData => {
       this.lineChartLabels.length = 0;
+
+      console.log(tempData);
 
       if (tempData.length === 0) {
         let _lineChartData: any[] = new Array(1);
