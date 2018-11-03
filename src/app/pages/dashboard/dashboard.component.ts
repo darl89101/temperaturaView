@@ -12,6 +12,14 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild('d') date1: ElementRef;
 
+  audio = new Audio();
+  audioTiempo: any;
+
+  muestra1: number = 0;
+  muestra2: number = 0;
+  color1: string = 'dodgerblue';
+  color2: string = 'dodgerblue';
+
   picker1: any;
   // @ViewChild('d2')
   picker2: any;
@@ -23,40 +31,60 @@ export class DashboardComponent implements OnInit {
   // lineChart
   lineChartData: any[] = [
     { data: [], label: 'Temperatura' },
-    { data: [], label: 'Temp Minima' },
-    { data: [], label: 'Temp Maxima' }
+    { data: [], label: 'Temp Minima', radius: 0 },
+    { data: [], label: 'Temp Maxima', radius: 0},
+  ];
+
+  lineChartData2: any[] = [
+    { data: [], label: 'Temperatura' },
+    { data: [], label: 'Temp Minima', radius: 0 },
+    { data: [], label: 'Temp Maxima', radius: 0},
   ];
 
   public lineChartLabels: Array<any> = [];
   public lineChartOptions: any = {
-    responsive: true
+    responsive: true,
+    scales : {
+      yAxes: [{
+         ticks: {
+            steps : 10,
+            stepValue : 10,
+            max : 10,
+            min: 0
+          }
+      }]
+    },
+    // elements: { point: { radius: 0 } }
   };
   public lineChartColors: any[] = [
     { // grey
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+      // pointBackgroundColor: 'rgba(148,159,177,1)',
+      // pointBorderColor: '#fff',
+      // pointHoverBackgroundColor: '#fff',
+      // pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     }, { // dark grey
-      backgroundColor: 'rgba(63,81,181,0.2)',
+      backgroundColor: 'rgba(0,0,0,0)',
       borderColor: 'rgba(51,51,153,1)',
-      pointBackgroundColor: 'rgba(77,83,96,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(77,83,96,1)'
+      // pointBackgroundColor: 'rgba(77,83,96,1)',
+      // pointBorderColor: '#fff',
+      // pointHoverBackgroundColor: '#fff',
+      // pointHoverBorderColor: 'rgba(77,83,96,1)'
     }, { // grey
-      backgroundColor: 'rgba(243,67,54,0.2)',
+      backgroundColor: 'rgba(0,0,0,0)',
       borderColor: 'rgba(255,0,0,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+      // pointBackgroundColor: 'rgba(148,159,177,1)',
+      // pointBorderColor: '#fff',
+      // pointHoverBackgroundColor: '#fff',
+      // pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     }
   ];
 
-  constructor(private service: TemperaturaService, private ref: ChangeDetectorRef) { }
+  constructor(private service: TemperaturaService, private ref: ChangeDetectorRef) { 
+    this.audio.src = 'assets/audio/alarma1.mp3';
+    this.audio.load();
+  }
 
   ngOnInit() {
     this.consultarDatos(undefined, undefined);
@@ -89,7 +117,7 @@ export class DashboardComponent implements OnInit {
   }
 
   consultarDatos(fini: string, ffin: string) {
-    this.service.consultarTemperatura(fini, ffin).subscribe(tempData => {
+    this.service.consultarTemperatura(fini, ffin, 1).subscribe(tempData => {
       this.lineChartLabels.length = 0;
 
       let minimo: number = 9999;
@@ -117,17 +145,68 @@ export class DashboardComponent implements OnInit {
       }
       _lineChartData[1] = {data: new Array(tempData.length), label: 'Minimo'};
       for (let i = 0; i < tempData.length; i++) {
-        _lineChartData[1].data[i] = Number(minimo);
+        _lineChartData[1].data[i] = 2; // Number(minimo);
       }
       _lineChartData[2] = {data: new Array(tempData.length), label: 'Maximo'};
       for (let i = 0; i < tempData.length; i++) {
-        _lineChartData[2].data[i] = maximo;
+        _lineChartData[2].data[i] = 8; // maximo;
+      }
+      this.muestra1 = _lineChartData[0].data[_lineChartData[0].data.length - 1];
+      if (this.muestra1 >= 8 || this.muestra1 <= 2) {
+        this.audio.play();
+        this.color1 = 'red';
+      } else {
+        this.color1 = 'dodgerblue';
       }
       this.lineChartData = _lineChartData;
       this.ref.detectChanges();
     });
 
 
+    this.service.consultarTemperatura(fini, ffin, 2).subscribe(tempData => {
+      this.lineChartLabels.length = 0;
+
+      let minimo: number = 9999;
+      let maximo: number = 0;
+      let _lineChartData: any[] = new Array(3);
+      _lineChartData[0] = {data: new Array(tempData.length), label: 'Temperatura'};
+      _lineChartData[1] = {data: [], label: 'Minimo'};
+      _lineChartData[2] = {data: [], label: 'Maximo'};
+
+      if (tempData.length === 0) {
+        this.lineChartData = _lineChartData;
+        return;
+      }
+
+      for (let i = 0; i < tempData.length; i++) {
+        let temp = tempData[tempData.length - 1 - i];
+        this.lineChartLabels.push(new Date(temp.createdAt).toLocaleTimeString());
+        _lineChartData[0].data[i] = Number(temp.valor);
+        if (Number(temp.valor) < minimo) {
+          minimo = temp.valor;
+        }
+        if (Number(temp.valor) > maximo) {
+          maximo = temp.valor;
+        }
+      }
+      _lineChartData[1] = {data: new Array(tempData.length), label: 'Minimo'};
+      for (let i = 0; i < tempData.length; i++) {
+        _lineChartData[1].data[i] = 2; // Number(minimo);
+      }
+      _lineChartData[2] = {data: new Array(tempData.length), label: 'Maximo'};
+      for (let i = 0; i < tempData.length; i++) {
+        _lineChartData[2].data[i] = 8; // maximo;
+      }
+      this.muestra2 = _lineChartData[0].data[_lineChartData[0].data.length - 1];
+      if (this.muestra2 >= 8 || this.muestra2 <= 2) {
+        this.audio.play();
+        this.color1 = 'red';
+      } else {
+        this.color1 = 'dodgerblue';
+      }
+      this.lineChartData2 = _lineChartData;
+      this.ref.detectChanges();
+    });
 
 
     // this.service.consultarTemperatura(fini, ffin).subscribe(tempData => {

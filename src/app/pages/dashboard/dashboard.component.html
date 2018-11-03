@@ -1,8 +1,9 @@
 <div class="row">
+    <h1>Sensor 1: <span style="color: dodgerblue;">{{muestra1}} °C</span></h1>
     <div class="col-md-12">
         <div style="display: block; ">
             <canvas baseChart width="400 " height="150 " [datasets]="lineChartData " [labels]="lineChartLabels " [options]="lineChartOptions " [colors]="lineChartColors " [legend]="lineChartLegend " [chartType]="lineChartType " (chartHover)="chartHovered($event)
-                    " (chartClick)="chartClicked($event) "></canvas>
+                    " (chartClick)="chartClicked($event)"></canvas>
         </div>
     </div>
     <!-- <div class="col-md-6 " style="margin-bottom: 10px ">
@@ -16,4 +17,14 @@
         </table>
     <button (click)="randomize() ">CLICK</button>
 </div> -->
+</div>
+<hr>
+<div class="row">
+    <h1>Sensor 2: <span [ngStyle]="{'color': color1}">{{muestra2}} °C</span></h1>
+    <div class="col-md-12">
+        <div style="display: block; ">
+            <canvas baseChart width="400 " height="150 " [datasets]="lineChartData2" [labels]="lineChartLabels " [options]="lineChartOptions " [colors]="lineChartColors " [legend]="lineChartLegend " [chartType]="lineChartType " (chartHover)="chartHovered($event)
+                        " (chartClick)="chartClicked($event)"></canvas>
+        </div>
+    </div>
 </div>

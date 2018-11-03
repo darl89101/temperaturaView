@@ -11,7 +11,7 @@ export class TemperaturaService {
 
   constructor(private http: HttpClient) { }
 
-  consultarTemperatura(fini: string, ffin: string) {
+  consultarTemperatura(fini: string, ffin: string, sensor: number) {
     // return this.http.get(URL_SERVICIOS + '/temp');
     // return new Observable(observer => {
     //   setInterval(() => {
@@ -22,7 +22,7 @@ export class TemperaturaService {
     // });
     return new Observable(observer => {
       setInterval(() => {
-        this.http.get(URL_SERVICIOS + `/temp?fini=${fini}&ffin=${ffin}`).subscribe(res => {
+        this.http.get(URL_SERVICIOS + `/temp?fini=${fini}&ffin=${ffin}&sensor=${sensor}`).subscribe(res => {
           observer.next(res);
         });
       }, 1000);
@@ -35,7 +35,7 @@ export class TemperaturaService {
   }
 
   consultarTemperaturaByDate(fini: string, ffin: string, limit: number) {
-    return this.http.get(URL_SERVICIOS + `/temp?fini=${fini}&ffin=${ffin}&limit=${limit}`)
+    return this.http.get(URL_SERVICIOS + `/temp?fini=${fini}&ffin=${ffin}&limit=${limit}&sensor=1`)
     .pipe(
       map((res: any) => {
         return res.temperaturas;

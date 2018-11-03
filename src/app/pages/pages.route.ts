@@ -20,7 +20,7 @@ export const PAGE_ROUTES: Routes = [
         component: PagesComponent,
         canActivate: [LoginGuardGuard],
         children: [
-            { path: 'dashboard', component: DashboardComponent, data: { titulo: 'Dashboard' } },
+            { path: 'dashboard', component: DashboardComponent, data: { titulo: 'Dashboard Temperatura' } },
             { path: 'historial', component: HistorialComponent, data: { titulo: 'Historial' } },
             { path: 'progress', component: ProgressComponent, data: { titulo: 'Progress' } },
             { path: 'graficas1', component: Graficas1Component, data: { titulo: 'Gráficas' } },
