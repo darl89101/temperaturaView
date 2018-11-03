@@ -25,7 +25,7 @@ export class TemperaturaService {
         this.http.get(URL_SERVICIOS + `/temp?fini=${fini}&ffin=${ffin}`).subscribe(res => {
           observer.next(res);
         });
-      }, 3000);
+      }, 1000);
     }).pipe(
       map((res: any) => {
         return res.temperaturas;
