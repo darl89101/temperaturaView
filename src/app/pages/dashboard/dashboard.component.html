@@ -1,8 +1,32 @@
 <div class="row">
+    <div class="col-md-12">
+        <!-- <button type="button" class="btn btn-outline-primary">
+                    <i class="fa fa-plus"></i>
+                Desactivar Alarma
+            </button> -->
+
+        <!-- <button type="button" class="btn btn-success" data-toggle="button" aria-pressed="false">
+            <i class="ti-check text-active" aria-hidden="true"></i>
+            <span class="text-active">Activado</span>
+            <i class="ti-close text" aria-hidden="true"></i>
+            <span class="text">Desactivado</span>
+        </button> -->
+        <div *ngIf="notificaciones" class="alert alert-success" role="alert">
+            Notificaciones Activadas
+        </div>
+        <div *ngIf="!notificaciones" class="alert alert-danger" role="alert">
+            Notificaciones Desactivadas
+        </div>
+
+
+    </div>
+</div>
+<div class="row">
+
     <h1>Sensor 1: <span style="color: dodgerblue;">{{muestra1}} °C</span></h1>
     <div class="col-md-12">
         <div style="display: block; ">
-            <canvas baseChart width="400 " height="150 " [datasets]="lineChartData " [labels]="lineChartLabels " [options]="lineChartOptions " [colors]="lineChartColors " [legend]="lineChartLegend " [chartType]="lineChartType " (chartHover)="chartHovered($event)
+            <canvas baseChart width="400 " height="80 " [datasets]="lineChartData " [labels]="lineChartLabels " [options]="lineChartOptions " [colors]="lineChartColors " [legend]="lineChartLegend " [chartType]="lineChartType " (chartHover)="chartHovered($event)
                     " (chartClick)="chartClicked($event)"></canvas>
         </div>
     </div>
@@ -23,7 +47,7 @@
     <h1>Sensor 2: <span [ngStyle]="{'color': color1}">{{muestra2}} °C</span></h1>
     <div class="col-md-12">
         <div style="display: block; ">
-            <canvas baseChart width="400 " height="150 " [datasets]="lineChartData2" [labels]="lineChartLabels " [options]="lineChartOptions " [colors]="lineChartColors " [legend]="lineChartLegend " [chartType]="lineChartType " (chartHover)="chartHovered($event)
+            <canvas baseChart width="400 " height="80" [datasets]="lineChartData2" [labels]="lineChartLabels " [options]="lineChartOptions " [colors]="lineChartColors " [legend]="lineChartLegend " [chartType]="lineChartType " (chartHover)="chartHovered($event)
                         " (chartClick)="chartClicked($event)"></canvas>
         </div>
     </div>

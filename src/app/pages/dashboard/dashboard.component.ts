@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { TemperaturaService } from '../../services/temperatura/temperatura.service';
 import { formatDate } from '@angular/common';
+import { ParametrosService } from 'src/app/services/service.index';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +11,7 @@ import { formatDate } from '@angular/common';
 })
 export class DashboardComponent implements OnInit {
 
+  notificaciones: boolean = true;
   @ViewChild('d') date1: ElementRef;
 
   audio = new Audio();
@@ -81,7 +83,8 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  constructor(private service: TemperaturaService, private ref: ChangeDetectorRef) { 
+  constructor(private service: TemperaturaService, private ref: ChangeDetectorRef,
+    private parametrosService: ParametrosService) {
     this.audio.src = 'assets/audio/alarma1.mp3';
     this.audio.load();
   }
@@ -117,6 +120,9 @@ export class DashboardComponent implements OnInit {
   }
 
   consultarDatos(fini: string, ffin: string) {
+    this.parametrosService.consultarParametros().subscribe((data: any) => {
+      this.notificaciones = data.notificarcorreo;
+    });
     this.service.consultarTemperatura(fini, ffin, 1).subscribe(tempData => {
       this.lineChartLabels.length = 0;
 
@@ -152,7 +158,7 @@ export class DashboardComponent implements OnInit {
         _lineChartData[2].data[i] = 8; // maximo;
       }
       this.muestra1 = _lineChartData[0].data[_lineChartData[0].data.length - 1];
-      if (this.muestra1 >= 8 || this.muestra1 <= 2) {
+      if (this.muestra1 >= 8 || this.muestra1 < 2) {
         this.audio.play();
         this.color1 = 'red';
       } else {
@@ -198,11 +204,11 @@ export class DashboardComponent implements OnInit {
         _lineChartData[2].data[i] = 8; // maximo;
       }
       this.muestra2 = _lineChartData[0].data[_lineChartData[0].data.length - 1];
-      if (this.muestra2 >= 8 || this.muestra2 <= 2) {
+      if (this.muestra2 >= 8 || this.muestra2 < 2) {
         this.audio.play();
-        this.color1 = 'red';
+        this.color2 = 'red';
       } else {
-        this.color1 = 'dodgerblue';
+        this.color2 = 'dodgerblue';
       }
       this.lineChartData2 = _lineChartData;
       this.ref.detectChanges();
